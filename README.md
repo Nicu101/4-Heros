@@ -324,25 +324,14 @@ La finalul primei runde va apărea un LifeGiver la poziția (0,0), iar la finalu
 Liniile sunt de forma (<numărul de îngeri din runda curentă> <tip înger 1, coordonata X, coordonata Y> <tip înger 2, coordonata X, coordonata Y>
 
 Exemplu Input:
-<code>
+
 1 1
-
 V
-
 2
-
 K 0 0
-
 P 0 0
-
 2
-
 __
-
 __
-
 1 LifeGiver,0,0
-
 1 LevelUpAngel,0,0
-
-</code>
