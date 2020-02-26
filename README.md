@@ -325,22 +325,13 @@ Liniile sunt de forma (<numărul de îngeri din runda curentă> <tip înger 1, c
 
 Exemplu Input:
 
-1 1
-
-V
-
-2
-
-K 0 0
-
-P 0 0
-
-2
-
-__
-
-__
-
-1 LifeGiver,0,0
-
-1 LevelUpAngel,0,0
+ 1 1 
+ V 
+ 2 
+ K 0 0
+ P 0 0
+ 2
+ __
+ __
+ 1 LifeGiver,0,0
+ 1 LevelUpAngel,0,0
