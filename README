@@ -1,0 +1,114 @@
+Etapa 1 -POO - Vasile Nicolae - 341C2
+    ------------
+    | ETAPA 1: |
+    ------------
+
+1. Mod de organizare:
+    Tema este organizata in 3 packete:
+--> characters, care contine clasele:
+    -> hero - implementeaza trasaturile generale ale unui erou (exemple: hp, exp, coordonate),
+    precum si metodele necesare oricarui erou, cum ar fi mecanismul de level up, mecanismul de
+    mutare.
+    -> Knight, Wizard, Pyromancer, Rogue - implementeaza trasaturile specifice fiecarui erou,
+    cum ar fi metodele de atac ale acestuia.
+--> map, care contine clasele:
+    -> Map - implementeaza metodele generale tuturor mapelor, mai exact metodele folosite pentru
+    'double dispatch'.
+    -> Desert, Land, Volcanic, Woods - fac overwrite metodele necesare pentru aplicarea bonusurilor
+    specifice fiecarui tip de erou.
+--> main, care contine clasele:
+    -> Main - care da start la citire, joc si scriere.
+    -> GameInputLoader - implementeaza citirea din fisier.
+    -> Game - metodele generale necesare pentru implementarea mecanismului jocului.
+
+2. Mecanismul jocului:
+    Fiecare erou are coordonatele salvate in clasa.
+    Metoda playGame din clasa Game implementeaza toate rundele, in fiecare runda facand:
+    -> mut toti eroi care sunt in viata;
+    -> in metoda de move se aplica si damage pasiv;
+    -> pentru fiecare erou, in viata si care nu s-a luptat runda asta, caut un adversar cu ajutorul
+    metodei findSecondHero.
+        -> daca am gasit un adversar, acestia se bat, implementarea fiind facuta in metoda
+        fight
+        -> imediat dupa fac level up la castigator daca este necesar cu ajutorul metodei
+        rewardExpToWinner.
+        -> marchez cei doi eroi ca s-au luptat.
+
+    -> la sfarsitul rundelor, dupa ce metoda playGame sa terminat, voi scrie in fisier folosind
+    metoda gameResult.
+
+3. Double Dispatch:
+    Ground modifier e realizat prin 'double dispatch':
+    Am ales sa fac fiecare tip de mapa un singleton (o clasa creata doar odata) pentru a realiza
+o potrivire intre un tip de erou si un tip de mapa, astfel incat sa pot aplica 'ground modifier'
+folosinduma de 'double dispatch'. Asta se face cu ajutorul metodei 'acceptGroundModifier'
+(specifica tipul de erou) din clasele de tip erou si metodele 'groundModifier' (apelata pe zona) din
+clasele de tip map.
+    Race modifier e realizat prin 'double dispatch' pe fiecare vraja:
+    Am ales sa fac asta pentru a putea lega un tip de erou cu un alt tip de erou. Aceasta se face
+prin metoda 'acceptRaceModifierForPrimarySpell'/'acceptRaceModifierForSecondarySpell' care
+specifica "erou care ataca" si metodele 'raceModifierForPrimarySpell'/'raceModifierForSecondarySpell'
+apelate de erou care ataca pe "erou de atacat".
+(exp: enemyHero.acceptRaceModifierForPrimarySpell((attackingHero) this, damage)
+      attackingHero.raceModifierForPrimarySpell((enemyHero) this, damage)
+  Astfel putem trimite clasa specifica si pentru attackingHero si enemyHero chiar daca
+la apelarea primei metode noi nu il stiam; enemyhero era primit ca Hero.)
+
+4. Bonus:
+    Nu am implementat bonus-ul.
+
+	------------
+    | ETAPA 2: |
+    ------------
+1. Mod de organizare:
+    La tema s-au adaugat 2 packete si 3 clase noi in packetul main:
+--> packetul 'angels', care contine clasele:
+    -> Angel - implementeaza trasaturile generale, coordonatele, si metodele necesare oricarui
+    inger. In acelasi timp aceasta extinde clasa 'Observable' pentru a putea anunta
+    'The Great Wizard' despre efectul unui inger.
+    -> DamageAngel, DarkAngel, ..., XPAngel - implementeaza trasaturile specifice fiecarui inger,
+    cum ar fi efectele asupra eroilor.
+--> packetul 'strategies', care contine clase si interfata:
+    -> AttackStrategy - interfata folosita pentru a incapsula toate strategiile.
+    -> KnightStrategy, PyromancerStrategy, RogueStrategy, WizardStrategy - clase care implementeaza
+    strategiile folosite de eroi.
+--> in main am adaugat clasele:
+    -> AngelFactory - implementarea unui design de tip 'Factory' pentru crearea tuturor ingerilor.
+    -> StrategyFactory - implementarea unui design de tip 'Factory' pentru crearea tuturor eroilor.
+    -> TheGreatWizard - o clasa care implementeaza 'Observer', folosita pentru a salvarea in fisier
+    a tuturor notificatilor primite. Acestea fiind: unde se spawneaza un inger si ce efect are
+    asupra unui erou; cand incepe si se termina o runda; ce jucator (erou) a fost ucis de cine;
+    ce jucatori (eroi) au facut 'level Up'.
+    Urmatoarele clase au avut parte de adaugare de functionalitati noi:
+--> GameInputLoader - am adaugat citirea ingerilor;
+--> Hero - acum extinde clasa 'Observable' si are o metoda care creaza un mesaj de 'level up' pentru
+    'Observer' (The Great Wizard) si il notifica cand asta i se intampla unui erou.
+--> Game - acum extind clasa 'Observable' si contine metodele necesare pentru notificare, cand:
+    incepe si se termina runda; un erou omoara alt erou; se spawneaza un inger. Totodata am adaugat
+    si o metoda care adauga la toate obiectele 'Observable', observatorul 'TheGreatWizard'.
+--> Knight, Rogue, Wizard, Pyromancer - au o metoda care le modifica coeficientii de damage.
+
+2. Mecanismul jocului - nu sa schimbat, tot ce sa intamplat a fost adaugarea unei strategii inainte
+de lupta dintre 2 eroi si adaugarea ingerilor la sfarsit.
+
+3. Mentiuni:
+--> Implementarea Design Pattern 'Visitor' pentru ingeri nu a fost facuta, nu era compatibila cu
+vechiul cod. Am preferat sa folosesc un 'single dispatch' in locul acesteia.
+--> Am ales sa nu fac clasele de tip inger 'Singleton' deoarece asta ar ingreuna codul. Coordonatele
+acestor fiind nevoi sa le salvez oricum.
+--> Clasa 'TheGreatWizard' este 'Singleton', desi nu este nevoie. Dupa cum se observa, aceasta e
+creata in main o singura data.
+--> Clasa Map era deja 'Singleton'.
+--> Am mutat crearea eroilor dintr-o metoda statica a clasei 'Hero' in clasa 'HeroFactory'.
+--> Am ales ca notificarile primite de observarul 'TheGreatWizard' sa contina mesajul pe care acesta
+trebuie sa il stie, pentru a nu ingreuna clasa cu verificari si date de care nu ar avea nevoie.
+--> Pentru aplicarea metodei 'angelEffect' potrivita din interiorul claselor de ingeri, am folosit
+un 'single dispatch' pentru a specifica pe ce tip de erou se face asta.
+
+4. Bonus:
+    Nu am implementat bonus-ul.
+
+
+
+
+
