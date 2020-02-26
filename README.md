@@ -325,7 +325,6 @@ Liniile sunt de forma (<numărul de îngeri din runda curentă> <tip înger 1, c
 
 Exemplu Input:
 <code>
- 
 1 1
 
 V
@@ -337,6 +336,7 @@ K 0 0
 P 0 0
 
 2
+
 __
 
 __
