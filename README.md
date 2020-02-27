@@ -1,5 +1,7 @@
 # 4-Heros
 The Great Wizard is looking over the adventures of the new heros. The terrain range from volcanic to forrests and angels are present everywhere in this land.
+
+
 =Scenariu=
 
 Suntem într-un joc MMO-style. Eroii noștri își petrec viața într-un univers 2D, pe care îl explorează și în care se dezvoltă.
